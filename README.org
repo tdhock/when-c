@@ -1,0 +1,6 @@
+When to write low-level (C/C++) instead of high-level (R/Python) code?
+
+In general the answer is: use a low-level language when there is no
+efficient high-level implementation. Some examples:
+
+
