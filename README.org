@@ -50,6 +50,9 @@ If you are careful you can write C code that interfaces with both Python and R w
 For example take a look at my SegAnnot project.
 
 *** SegAnnot R package
+
+Full documentation is in the [[http://cran.r-project.org/doc/manuals/r-release/R-exts.html#Interface-functions-_002eC-and-_002eFortran][Foreign Function Interface part of the Writing R Extensions Manual]].
+
 - [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/FindOptimalSegmentations.c?view=markup&revision=15&root=segannot][SegAnnot/src/FindOptimalSegmentations.c]]
   contains the C code which defines the bases function.
   It takes several arguments which can be anything,
