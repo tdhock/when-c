@@ -27,6 +27,21 @@ efficient high-level implementation. Some examples:
   [[https://github.com/tdhock/revector][the revector package]]
   so I can parse a character vector using a matching vector of
   [[http://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions][Perl-compatible regular expressions]].
+  
+** When to NOT write low-level code?
+
+- You can express your computation in terms of matrix-vector or vector-scalar operations
+  (or other R functions which are already implemented in low-level C code).
+  In that case you should just write R code or python numpy code.
+  For example the R code in my 
+  [[https://github.com/tdhock/WeightedROC/blob/master/R/ROC.R][WeightedROC]]
+  package uses the vectorized cumsum function to compute a weighted
+  [[http://en.wikipedia.org/wiki/Receiver_operating_characteristic][Receiver Operating Characteristic (ROC) curve]]
+  faster than the 
+  [[http://cran.r-project.org/web/packages/pROC/index.html][pROC package]]
+  (which actually uses C code in some cases,
+  but has a lot of overhead in R code that slows it down).
+  
 ** How to interface C code with Python or R?
 
 If you are careful you can write C code that interfaces with both Python and R with little or no changes.
