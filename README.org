@@ -173,7 +173,7 @@ You need to write #include "breakpointError.h" at the top of interface.c and bre
 
 - The C function errorDetails_interface can be accessed from R using .Call("errorDetails_interface")
   which returns the R list that was constructed in the C code.
-  Note how simple this is -- 1 line of code!
+  Note how simple this is, since all the work was done in the C code.
 - The C function breakpointError_interface can be accessed from R using .C("breakpointError_interface")
   which returns an R list. The interesting component of the list is named "error" 
   and it is a numeric scalar. We need to check if it is negative and if so stop() with an error.
