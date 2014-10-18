@@ -20,10 +20,12 @@ For example take a look at my SegAnnot project:
   Make sure to put #include "FindOptimalSegmentations.h" at the top of this file.
   Note that the bridge function should check the integer error code returned by bases()
   and then call error("some error message") if necessary.
-- In the R code we call .C("bridge_bases") https://r-forge.r-project.org/scm/viewvc.php/pkg/R/findOptimalSegmentations.R?view=markup&revision=25&root=segannot
 - The only other thing you need to get a working R package is to put
   [[https://r-forge.r-project.org/scm/viewvc.php/pkg/NAMESPACE?view=markup&revision=2&root=segannot][useDynLib("SegAnnot")]]
   in the SegAnnot/NAMESPACE file.
+- On the command line do R CMD INSTALL SegAnnot
+  and in the R code do library(SegAnnot),
+  then you can call [[https://r-forge.r-project.org/scm/viewvc.php/pkg/R/findOptimalSegmentations.R?view=markup&revision=25&root=segannot][.C("bridge_bases")]]
 - The files in the Python package are analogous to those in the R package.
 - [[https://r-forge.r-project.org/scm/viewvc.php/python/SegAnnot.c?view=markup&revision=29&root=segannot][SegAnnot.c]]
   contains the C code which defines the SegAnnotBases function.
@@ -45,5 +47,10 @@ For example take a look at my SegAnnot project:
   (also rtfm about these functions).
   Finally look at the bottom of that file for Methods which defines the docstring,
   and initSegAnnot which must contain import_array() to prevent numpy from crashing python.
-  
+- To get a working python module you need to make
+  [[https://r-forge.r-project.org/scm/viewvc.php/python/setup.py?view=markup&revision=31&root=segannot][a setup.py file with ext_modules]].
+  Then you can python setup.py install your code,
+  which will make a SegAnnot.so file.
+  If it is on your PYTHONPATH then you can use it via from SegAnnot import SegAnnot.
+
   
