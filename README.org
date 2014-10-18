@@ -142,7 +142,8 @@ R has two ways to call compiled code: .C and .Call.
   then you should use .Call.
   
 The .Call interface is a bit more difficult to use since you have to learn the internal C functions defined by R.
-In contrast .C is a easier and still quite useful for numerical algorithms.
+In contrast .C is easier since it is limited to input/output of C arrays (R vectors),
+but it is still quite useful for numerical algorithms.
 
 My [[https://r-forge.r-project.org/scm/viewvc.php/pkg/?root=berr][breakpointError]] package
 is a simple example package that shows how to use both of these interfaces.
