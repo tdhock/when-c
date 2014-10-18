@@ -29,11 +29,11 @@ efficient high-level implementation. Some examples:
   [[https://github.com/tdhock/revector][the revector package]]
   so I can parse a character vector using a matching vector of
   [[http://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions][Perl-compatible regular expressions]].
-  
+
 ** When to NOT write low-level code?
 
 - You can express your computation in terms of matrix-vector or vector-scalar operations
-  (or other R functions which are already implemented in low-level C code).
+  (or other R/Python functions which are already implemented in low-level C code).
   In that case you should just write R code or python numpy code.
   For example the R code in my 
   [[https://github.com/tdhock/WeightedROC/blob/master/R/ROC.R][WeightedROC]]
@@ -43,7 +43,20 @@ efficient high-level implementation. Some examples:
   [[http://cran.r-project.org/web/packages/pROC/index.html][pROC package]]
   (which actually uses C code in some cases,
   but has a lot of overhead in R code that slows it down).
-  
+- You are waiting for your high-level R/Python code to compute.
+  In that case you should use a code profiler,
+  which will tell you which functions in your code are taking the most time.
+  Try [[https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rprof.html][Rprof in R]]
+  or [[https://docs.python.org/2/library/profile.html][profile/cProfile in Python]].
+  Usually, there is one function that takes 90% of the time,
+  and you can just re-write that function in terms of vector operations in high-level R/Python code.
+  If your code is still slow after profiling your code and optimizing the slow functions with better R/Python code,
+  then you should start to think about 
+- Your program uses all available memory and starts swapping.
+  In that case you should think about re-writing your code to be more memory efficient.
+  Or using a memory profiler... is there any memory profiler for
+  detecting what parts of R code use the most memory?
+  (as opposed to valgrind which is for the C code)
 ** How to interface C code with Python or R?
 
 If you are careful you can write C code that interfaces with both Python and R with little or no changes.
@@ -76,6 +89,9 @@ Full documentation is in the [[http://cran.r-project.org/doc/manuals/r-release/R
 *** Python extension module SegAnnot.so
 
 The files in the Python package are analogous to those in the R package.
+Full docs are in [[https://docs.python.org/2/extending/extending.html][the Python documentation for extension modules]]
+and the [[http://docs.scipy.org/doc/numpy/user/c-info.how-to-extend.html#writing-an-extension-module][numpy extension module documentation]].
+
 - [[https://r-forge.r-project.org/scm/viewvc.php/python/SegAnnot.c?view=markup&revision=29&root=segannot][SegAnnot.c]]
   contains the C code which defines the SegAnnotBases function.
   Its arguments can be anything,
@@ -101,5 +117,3 @@ The files in the Python package are analogous to those in the R package.
   Then you can python setup.py install your code,
   which will make a SegAnnot.so file.
   If it is on your PYTHONPATH then you can use it via from SegAnnot import SegAnnot.
-
-  
