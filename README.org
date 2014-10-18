@@ -14,7 +14,9 @@ efficient high-level implementation. Some examples:
   [[http://www.cplusplus.com/reference/set/set/][set]],
   [[http://www.cplusplus.com/reference/list/][list]], and
   [[http://www.cplusplus.com/reference/map/map/][map]] containers.
-- You need to perform scalar operations that can't be expressed using vector or matrix operations.
+- You need to perform scalar operations that can't be expressed
+  without performing some redundant computations 
+  using vector or matrix operations.
   In that case you should use arrays in C.
   For example I scan things along the genome in
   [[https://github.com/tdhock/PeakError][PeakError]],
