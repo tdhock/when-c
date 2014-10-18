@@ -71,7 +71,9 @@ efficient high-level implementation. Some examples:
 ** How to interface C code with Python or R?
 
 If you are careful you can write C code that interfaces with both Python and R with little or no changes.
-For example take a look at my SegAnnot project.
+For example take a look at my SegAnnot project which has both R and Python bindings
+(if you want to interface even more languages you should use
+[[http://www.swig.org/][Simplified Wrapper and Interface Generator]]).
 
 *** SegAnnot R package
 
@@ -130,3 +132,47 @@ and the [[http://docs.scipy.org/doc/numpy/user/c-info.how-to-extend.html#writing
   Then you can python setup.py install your code,
   which will make a SegAnnot.so file.
   If it is on your PYTHONPATH then you can use it via from SegAnnot import SegAnnot.
+
+** What is the difference between .C and .Call in R?
+
+R has two ways to call compiled code: .C and .Call.
+- If you already have some C code with int/double (pointer) arguments and return values,
+  then .C can be used to call that code with R integer/numeric vectors.
+- If you want to input/output more complicated R data structures like lists in your compiled code,
+  then you should use .Call.
+  
+The .Call interface is a bit more difficult to use since you have to learn the internal C functions defined by R.
+In contrast .C is a easier and still quite useful for numerical algorithms.
+
+My [[https://r-forge.r-project.org/scm/viewvc.php/pkg/?root=berr][breakpointError]] package
+is a simple example package that shows how to use both of these interfaces.
+
+*** [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/breakpointError.c?view=markup&revision=2&root=berr][src/breakpointError.c]] defines two C functions
+
+- int errorDetails(...) takes several int, int*, double* then returns an integer error code.
+- double breakpointError(...) takes several int, int* 
+  then returns a double which is negative for an error,
+  otherwise it is the breakpointError.
+  
+*** [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/breakpointError.h?view=markup&revision=2&root=berr][src/breakpointError.h]] defines prototypes and error codes
+
+You need to write #include "breakpointError.h" at the top of interface.c and breakpointError.c.
+
+*** [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/interface.c?view=markup&revision=2&root=berr][src/interface.c]] contains the interface/bridge functions
+
+- Inputs/outputs of errorDetails_interface are SEXP (all R data is SEXP) and this can be used with .Call.
+  It calls errorDetails and checks the return value for an error code,
+  calling error() if necessary.
+  Note to access SEXP and R internal C functions such as allocVector you need to #include <R.h> and
+  #include <Rinternals.h> at the top of the C code file.
+- breakpointError_interface inputs are pointers and output is void.
+  This function can be used with .C -- note how much simpler C code this is!
+
+*** [[https://r-forge.r-project.org/scm/viewvc.php/pkg/R/breakpointError.R?view=markup&revision=2&root=berr][R/breakpointError.R]] contains the R code with .C/.Call 
+
+- The C function errorDetails_interface can be accessed from R using .Call("errorDetails_interface")
+  which returns the R list that was constructed in the C code.
+  Note how simple this is -- 1 line of code!
+- The C function breakpointError_interface can be accessed from R using .C("breakpointError_interface")
+  which returns an R list. The interesting component of the list is named "error" 
+  and it is a numeric scalar. We need to check if it is negative and if so stop() with an error.
