@@ -46,17 +46,25 @@ efficient high-level implementation. Some examples:
 - You are waiting for your high-level R/Python code to compute.
   In that case you should use a code profiler,
   which will tell you which functions in your code are taking the most time.
-  Try [[https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rprof.html][Rprof in R]]
-  or [[https://docs.python.org/2/library/profile.html][profile/cProfile in Python]].
+  Try using
+  [[https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rprof.html][the Rprof function]]
+  and reading 
+  [[http://adv-r.had.co.nz/Profiling.html][Hadley Wickham's guide to Profiling R code]].
+  For Python take a look at [[https://docs.python.org/2/library/profile.html][profile/cProfile]].
   Usually, there is one function that takes 90% of the time,
   and you can just re-write that function in terms of vector operations in high-level R/Python code.
-  If your code is still slow after profiling your code and optimizing the slow functions with better R/Python code,
-  then you should start to think about 
+  If your code is still slow after that,
+  then you should start thinking about re-writing that one slow function in low-level code.
 - Your program uses all available memory and starts swapping.
-  In that case you should think about re-writing your code to be more memory efficient.
-  Or using a memory profiler... is there any memory profiler for
-  detecting what parts of R code use the most memory?
-  (as opposed to valgrind which is for the C code)
+  In that case maybe you can break your problem into separate tasks that can be computed independently?
+  If so, then just read the first data subset into memory,
+  perform the first computation,
+  write the first result to disk,
+  erase the first data subset from memory,
+  read the second data subset into memory,
+  etc. This is also the basic idea behind
+  [[http://cbio.ensmp.fr/~thocking/r-cbio-cluster.html][parallelization using qsub to launch jobs on a computer cluster]].
+  
 ** How to interface C code with Python or R?
 
 If you are careful you can write C code that interfaces with both Python and R with little or no changes.
@@ -64,7 +72,9 @@ For example take a look at my SegAnnot project.
 
 *** SegAnnot R package
 
-Full documentation is in the [[http://cran.r-project.org/doc/manuals/r-release/R-exts.html#Interface-functions-_002eC-and-_002eFortran][Foreign Function Interface part of the Writing R Extensions Manual]].
+Full documentation is in the [[http://cran.r-project.org/doc/manuals/r-release/R-exts.html#Interface-functions-_002eC-and-_002eFortran][Foreign Function Interface part of the Writing R Extensions Manual]],
+but it may be easier to start with 
+[[http://adv-r.had.co.nz/Rcpp.html][Hadley Wickham's guide to Rcpp]].
 
 - [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/FindOptimalSegmentations.c?view=markup&revision=15&root=segannot][SegAnnot/src/FindOptimalSegmentations.c]]
   contains the C code which defines the bases function.
