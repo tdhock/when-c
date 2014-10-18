@@ -57,6 +57,9 @@ efficient high-level implementation. Some examples:
   then you should start thinking about re-writing that one slow function in low-level code.
 - Your program uses all available memory and starts swapping.
   In that case maybe you can break your problem into separate tasks that can be computed independently?
+  It may be useful to know how much memory R is using, via
+  =cat(’point 1 mem’, memory.size(), memory.size(max=TRUE), ’\n’)=
+  (from Circle 2 Growing Objects of [[http://www.burns-stat.com/pages/Tutor/R_inferno.pdf][The R Inferno by Patrick Burns]]).
   If so, then just read the first data subset into memory,
   perform the first computation,
   write the first result to disk,
