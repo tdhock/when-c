@@ -1,12 +1,38 @@
-When to write low-level (C/C++) instead of high-level (R/Python) code?
+** When to write low-level (C/C++) instead of high-level (R/Python) code?
 
 In general the answer is: use a low-level language when there is no
 efficient high-level implementation. Some examples:
+- You need complex data structures, for example that keep a bunch of stuff sorted in a certain way.
+  In that case you should definitely use C++ and the [[http://en.wikipedia.org/wiki/Standard_Template_Library][STL]].
+  For example the STL 
+  [[http://www.cplusplus.com/reference/map/multimap/][multimap]] is a
+  [[http://en.wikipedia.org/wiki/Red%E2%80%93black_tree][red-black tree]] which I used in
+  [[https://r-forge.r-project.org/scm/viewvc.php/pkg/clusterpath/src/?root=clusterpath][clusterpath]].
+  Another example is 
+  [[https://github.com/tdhock/DiffPeaks][DiffPeaks]]
+  which also uses the
+  [[http://www.cplusplus.com/reference/set/set/][set]],
+  [[http://www.cplusplus.com/reference/list/][list]], and
+  [[http://www.cplusplus.com/reference/map/map/][map]] containers.
+- You need to perform scalar operations that can't be expressed using vector or matrix operations.
+  In that case you should use arrays in C.
+  For example I scan things along the genome in
+  [[https://github.com/tdhock/PeakError][PeakError]],
+  [[https://github.com/tdhock/SparseSignals][SparseSignals]], and
+  [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/?root=berr][breakpointError]].
+- There is some high quality library code in a low-level language that 
+  is already written and you just want to use it in your high-level language.
+  For example regular expression support in R is lacking,
+  so I wrote
+  [[https://github.com/tdhock/revector][the revector package]]
+  so I can parse a character vector using a matching vector of
+  [[http://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions][Perl-compatible regular expressions]].
+** How to interface C code with Python or R?
 
-
-How to interface C code with Python or R?
 If you are careful you can write C code that interfaces with both Python and R with little or no changes.
-For example take a look at my SegAnnot project:
+For example take a look at my SegAnnot project.
+
+*** SegAnnot R package
 - [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/FindOptimalSegmentations.c?view=markup&revision=15&root=segannot][SegAnnot/src/FindOptimalSegmentations.c]]
   contains the C code which defines the bases function.
   It takes several arguments which can be anything,
@@ -26,7 +52,10 @@ For example take a look at my SegAnnot project:
 - On the command line do R CMD INSTALL SegAnnot
   and in the R code do library(SegAnnot),
   then you can call [[https://r-forge.r-project.org/scm/viewvc.php/pkg/R/findOptimalSegmentations.R?view=markup&revision=25&root=segannot][.C("bridge_bases")]]
-- The files in the Python package are analogous to those in the R package.
+
+*** Python extension module SegAnnot.so
+
+The files in the Python package are analogous to those in the R package.
 - [[https://r-forge.r-project.org/scm/viewvc.php/python/SegAnnot.c?view=markup&revision=29&root=segannot][SegAnnot.c]]
   contains the C code which defines the SegAnnotBases function.
   Its arguments can be anything,
