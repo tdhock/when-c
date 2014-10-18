@@ -31,6 +31,7 @@ For example take a look at my SegAnnot project:
   and it returns an integer error code.
   Again note that we #include "SegAnnot.h"
   which defines the error codes.
+  Note that this code is pretty much exactly the same as FindOptimalSegmentations.c in the R package.
 - [[https://r-forge.r-project.org/scm/viewvc.php/python/SegAnnot.h?view=markup&revision=29&root=segannot][SegAnnot.h]]
   contains the prototype of the SegAnnotBases function.
 - [[https://r-forge.r-project.org/scm/viewvc.php/python/SegAnnot_interface.c?view=markup&revision=29&root=segannot][SegAnnot_interface.c]]
