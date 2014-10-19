@@ -187,4 +187,12 @@ You need to write #include "breakpointError.h" at the top of interface.c and bre
 *** Exercise for the reader
 
 Since the sizes of the outputs of errorDetails are known in advance,
-it is possible to implement it using .C -- do it!
+it is possible to implement it using .C, so
+- svn checkout svn://r-forge.r-project.org/svnroot/berr/
+- in src/interface.c write an errorDetails_interface_C function which takes only int* and double* arguments,
+  and returns void.
+- in R/breakpointError.R write an R function errorDetails_C which uses the C function errorDetails_interface_C.
+- in tests/testthat/test-details.R write a test for the errorDetails_C function,
+  using known input/output values. 
+  For documentation about the testthat package, read
+  [[http://r-pkgs.had.co.nz/tests.html][Hadley Wickham's chapter on Testing]].
