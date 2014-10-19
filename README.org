@@ -1,7 +1,7 @@
 ** When to write low-level (C/C++) instead of high-level (R/Python) code?
 
 In general the answer is: use a low-level language when there is no
-efficient high-level implementation. Some examples:f
+efficient high-level implementation. Some examples:
 - You need complex data structures, for example that keep a bunch of stuff sorted in a certain way.
   In that case you should definitely use C++ and the [[http://en.wikipedia.org/wiki/Standard_Template_Library][STL]].
   For example the STL 
