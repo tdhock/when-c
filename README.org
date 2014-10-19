@@ -131,7 +131,8 @@ and the [[http://docs.scipy.org/doc/numpy/user/c-info.how-to-extend.html#writing
   [[https://r-forge.r-project.org/scm/viewvc.php/python/setup.py?view=markup&revision=31&root=segannot][a setup.py file with ext_modules]].
   Then you can python setup.py install your code,
   which will make a SegAnnot.so file.
-  If it is on your PYTHONPATH then you can use it via =from SegAnnot import SegAnnotBases=.
+  If it is on your PYTHONPATH then you can use it via =from SegAnnot import SegAnnotBases=
+  as I do in [[https://gforge.inria.fr/scm/viewvc.php/webapp/pyramid/plotter/db.py?view=markup&revision=1435&root=breakpoints][the SegAnnDB source code]].
 
 ** What is the difference between .C and .Call in R?
 
