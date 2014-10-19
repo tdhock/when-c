@@ -1,7 +1,7 @@
 ** When to write low-level (C/C++) instead of high-level (R/Python) code?
 
 In general the answer is: use a low-level language when there is no
-efficient high-level implementation. Some examples:
+efficient high-level implementation. Some examples:f
 - You need complex data structures, for example that keep a bunch of stuff sorted in a certain way.
   In that case you should definitely use C++ and the [[http://en.wikipedia.org/wiki/Standard_Template_Library][STL]].
   For example the STL 
@@ -131,7 +131,7 @@ and the [[http://docs.scipy.org/doc/numpy/user/c-info.how-to-extend.html#writing
   [[https://r-forge.r-project.org/scm/viewvc.php/python/setup.py?view=markup&revision=31&root=segannot][a setup.py file with ext_modules]].
   Then you can python setup.py install your code,
   which will make a SegAnnot.so file.
-  If it is on your PYTHONPATH then you can use it via from SegAnnot import SegAnnot.
+  If it is on your PYTHONPATH then you can use it via =from SegAnnot import SegAnnotBases=.
 
 ** What is the difference between .C and .Call in R?
 
