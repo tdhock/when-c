@@ -6,6 +6,7 @@ not* use low-level code. After reading that, if you decide to actually
 write the low-level code, you can read examples:
 - [[file:example-R-python.org][SegAnnot: a simple C library with bindings in both R and Python]]
 - [[file:example-C-Call.org][breakpointError: an R package that uses both .C and .Call]]
+- [[file:example-clusterpath-Rcpp-Call.org][clusterpath (standard Rinternals.h functions) vs clusterpathRcpp]]
 
 ** When to write low-level code?
 

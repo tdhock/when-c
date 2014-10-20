@@ -1,0 +1,27 @@
+When to use Rcpp instead of standard C/C++ code in R packages?
+
+[[http://www.rcpp.org/][Rcpp]] is an R package for interfacing C++ code with R.  My rule of
+thumb is: use the simple .C interface if I can. Otherwise use .Call
+and there are essentially two options
+- Learn the standard C functions defined by [[https://svn.r-project.org/R/trunk/src/include/Rinternals.h][<Rinternals.h>]], or
+- Learn the Rcpp package, which implicitly uses Rinternals.h functions.
+
+In either case you have to learn something, so it is your choice. Rcpp
+provides a layer of abstraction for converting R data types to C++
+data types. So Rcpp should be good if you don't care exactly what the
+code is doing. But if you want more full control then you should learn
+Rinternals.h (after all, that is how they wrote Rcpp).
+
+
+For my [[https://r-forge.r-project.org/scm/viewvc.php/pkg/?root%3Dclusterpath][clusterpath]] project, I wrote the [[https://r-forge.r-project.org/scm/viewvc.php/pkg/clusterpath/?root%3Dclusterpath][clusterpath]] package that uses
+Rinternals.h, and the [[https://r-forge.r-project.org/scm/viewvc.php/pkg/clusterpathRcpp/?root%3Dclusterpath][clusterpathRcpp]] package that uses Rcpp.
+
+*** clusterpath
+
+[[https://r-forge.r-project.org/scm/viewvc.php/pkg/clusterpath/src/interface.cpp?view%3Dmarkup&revision%3D86&root%3Dclusterpath][clusterpath/src/interface.cpp]] has =#include <Rinternals.h>= and uses
+standard functions such as =PROTECT= and =SET_VECTOR_ELT=.
+
+*** clusterpathRcpp
+
+[[https://r-forge.r-project.org/scm/viewvc.php/pkg/clusterpathRcpp/src/interface.cpp?view%3Dmarkup&revision%3D74&root%3Dclusterpath][clusterpathRcpp/src/interface.cpp]] has =#include <Rcpp.h>= and uses
+Rcpp types such as =NumericMatrix=, =IntegerVector=, and =DataFrame=.
