@@ -1,9 +1,34 @@
 How to interface C code with Python or R?
 
-If you are careful you can write C code that interfaces with both Python and R with little or no changes.
-For example take a look at my SegAnnot project which has both R and Python bindings
+You have already decided that you need to use low-level code.  Now,
+how to interface that with your existing high-level (R/Python) code?
+If you are careful you can write C code that can be used in a command
+line program, and can be interfaced with both Python and R with little
+or no changes. However, one has to write some interface code in each
+case.
+
+First I discuss the possibility of writing a command line
+program. Then I discuss my SegAnnot project 
+which has both R and Python bindings
 (if you want to interface even more languages you should use
 [[http://www.swig.org/][Simplified Wrapper and Interface Generator]]).
+
+*** Command line programs
+
+First, you should consider writing a simple command line program
+that takes text files as inputs and outputs.
+Writing the code for a main() function in C
+(parsing command line arguments and text files)
+is sometimes easier than writing the the .c/.h interface files
+(converting R/Python data structures to C/C++ data structures).
+However there are two drawbacks to using a command line program:
+- copying data through files on disk is not as fast as memory.
+- distributing command line programs is not as portable
+(for example, after submitting C source code to 
+[[http://cran.r-project.org/][CRAN]],
+they will compile it on their servers and distribute binaries
+for Windows/Mac users without compilers;
+however CRAN will not distribute compiled command line programs).
 
 *** SegAnnot R package
 
