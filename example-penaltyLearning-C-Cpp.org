@@ -1,0 +1,127 @@
+How to register routines in an R package that contains both C and C++ code?
+
+R packages on CRAN need to have [[https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Registering-native-routines][registered native routines]]. In an R
+package with both C and C++ code this can be tricky. This page
+contains some suggestions and an example. In general,
+- put all compiled code in =src/*.cpp= files (otherwise you will get
+  compilation errors).
+- create an =interface.cpp= file with a =R_init_pkg()= function that
+  is defined inside of =extern "C" {}= (otherwise R will not see it).
+
+*** Do not mix C and C++ code in an R package
+
+For example consider the [[https://github.com/tdhock/penaltyLearning][penaltyLearning]] package which contains one C
+function =largestContinuousMinimum= and one C++ function
+=modelSelection=.
+
+- =modelSelection= uses =#include <list>= from the C++ STL, so it
+  needs a C++ compiler (e.g. =g++=). To have R compile it as C++ code,
+  I put it in a file called =modelSelection.cpp= (the =.cpp= suffix is
+  essential).
+- =largestContinuousMinimum= does not use any special C++ features, so
+  it could be compiled using a C compiler (e.g. =gcc=). However if you
+  put it in =largestContinuousMinimum.c= and then try to compile the
+  package, you get an error:
+
+    #+BEGIN_EXAMPLE
+    R CMD INSTALL ..
+    * installing to library ‘/home/tdhock/lib/R/library’
+    * installing *source* package ‘penaltyLearning’ ...
+    ** libs
+    g++ -std=c++11 -I/home/tdhock/lib/R/include -DNDEBUG  -I/usr/local/include    -fpic  -g -O2 -c interface.cpp -o interface.o
+    gcc -std=gnu99 -I/home/tdhock/lib/R/include -DNDEBUG  -I/usr/local/include    -fpic  -g -O2  -c largestContinuousMinimum.c -o largestContinuousMinimum.o
+    g++ -std=c++11 -I/home/tdhock/lib/R/include -DNDEBUG  -I/usr/local/include    -fpic  -g -O2 -c modelSelection.cpp -o modelSelection.o
+    g++ -std=c++11 -shared -L/home/tdhock/lib/R/lib -L/usr/local/lib -o penaltyLearning.so interface.o largestContinuousMinimum.o modelSelection.o -L/home/tdhock/lib/R/lib -lR
+    installing to /home/tdhock/lib/R/library/penaltyLearning/libs
+    ** R
+    ** data
+    ** preparing package for lazy loading
+    ** help
+    *** installing help indices
+    ** building package indices
+    ** testing if installed package can be loaded
+    Error in dyn.load(file, DLLpath = DLLpath, ...) : 
+      unable to load shared object '/home/tdhock/lib/R/library/penaltyLearning/libs/penaltyLearning.so':
+      /home/tdhock/lib/R/library/penaltyLearning/libs/penaltyLearning.so: undefined symbol: _Z24largestContinuousMinimumiPdS_Pi
+    Error: loading failed
+    Execution halted
+    ERROR: loading failed
+    * removing ‘/home/tdhock/lib/R/library/penaltyLearning’
+    * restoring previous ‘/home/tdhock/lib/R/library/penaltyLearning’
+    #+END_EXAMPLE
+
+One way to fix this error is to just rename the
+=largestContinuousMinimum.c= file to =largestContinuousMinimum.cpp=
+(so then R knows to use a C++ compiler rather than a C compiler).
+
+    #+BEGIN_EXAMPLE
+    R CMD INSTALL ..
+    * installing to library ‘/home/tdhock/lib/R/library’
+    * installing *source* package ‘penaltyLearning’ ...
+    ** libs
+    g++ -std=c++11 -I/home/tdhock/lib/R/include -DNDEBUG  -I/usr/local/include    -fpic  -g -O2 -c interface.cpp -o interface.o
+    g++ -std=c++11 -I/home/tdhock/lib/R/include -DNDEBUG  -I/usr/local/include    -fpic  -g -O2 -c largestContinuousMinimum.cpp -o largestContinuousMinimum.o
+    g++ -std=c++11 -I/home/tdhock/lib/R/include -DNDEBUG  -I/usr/local/include    -fpic  -g -O2 -c modelSelection.cpp -o modelSelection.o
+    g++ -std=c++11 -shared -L/home/tdhock/lib/R/lib -L/usr/local/lib -o penaltyLearning.so interface.o largestContinuousMinimum.o modelSelection.o -L/home/tdhock/lib/R/lib -lR
+    installing to /home/tdhock/lib/R/library/penaltyLearning/libs
+    ** R
+    ** data
+    ** preparing package for lazy loading
+    ** help
+    *** installing help indices
+    ** building package indices
+    ** testing if installed package can be loaded
+    * DONE (penaltyLearning)
+    #+END_EXAMPLE
+
+*** Registering interface functions
+  
+As described in [[file:example-C-Call.org]] and [[file:example-R-python.org]],
+for every C++ function I recommend writing two files:
+- =fun.h= which declares constants, prototypes, classes, and error codes.
+- =fun.cpp= which provides the implementations of the functions and methods.
+This paradigm makes the C++ more easily portable to other high-level
+languages (such as python, etc). 
+
+The penaltyLearning package has two functions, so there are two =.h=
+files and two =.cpp= files. There is also an =interface.cpp= which
+defines everything that R needs in order to use these functions. In
+particular,
+- The header has =#include "fun.h"= for every function you have
+  declared.
+- The header also has =#include <R.h>= which defines the function
+  =error= which you should use to signal an error to R, if your
+  function returns with an error code.
+- The header also has =#include <R_ext/Rdynload.h>= which defines the
+  =R_registerRoutines= function and the =R_CMethodDef= type (more on
+  this later).
+- There should be definitions of =void fun_interface(int *foo, double
+  *bar)= functions that R can access using =.C=.
+- Create a NULL-terminated array of C++ functions that R should
+  register. Each element of the array should have 3 elements:
+  - The name of the function as it will be known to =.C= in R,
+    e.g. ="fun_interface"=.
+  - A pointer to the function, e.g. =(DL_FUNC)&fun_interface=.
+  - The number of arguments, e.g. =5=.
+#+BEGIN_SRC c++
+R_CMethodDef cMethods[] = {
+  {"modelSelection_interface", (DL_FUNC) &modelSelection_interface, 5},
+  {"largestContinuousMinimum_interface", (DL_FUNC) &largestContinuousMinimum_interface, 4},
+  {NULL, NULL, 0}
+};
+#+END_SRC
+- Finally define a function =void R_init_yourPkgName(DllInfo *info)=
+  which will be called when your package is loaded (technically, when
+  =library.dynam("yourPkgName")= is called). This function should call
+  =R_registerRoutines(info, cMethods, NULL, NULL, NULL)= which
+  registers the C++ functions for use by =.C= in R. Note the three
+  =NULL= at the end are for =.Call=, =.Fortran=, and =.External= calls
+  (for more info read [[https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Registering-native-routines][Writing R Extensions]]). IMPORTANT: put this
+  function inside of =extern "C"=, otherwise R will not find it!
+#+BEGIN_SRC c++
+extern "C" {
+  void R_init_penaltyLearning(DllInfo *info) {
+    R_registerRoutines(info, cMethods, NULL, NULL, NULL);
+  }
+}
+#+END_SRC
