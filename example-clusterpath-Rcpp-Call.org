@@ -7,7 +7,7 @@ and there are essentially two options
 - Learn the Rcpp package, which implicitly uses Rinternals.h functions.
 
 In either case you have to learn something, so it is your choice. Rcpp
-provides a layer of abstraction for converting R data types to C++
+provides a user-friendly layer of abstraction for converting R data types to C++
 data types. So Rcpp should be good if you don't care exactly what the
 code is doing. But if you want more full control then you should learn
 Rinternals.h (after all, that is how they wrote Rcpp).

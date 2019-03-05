@@ -19,27 +19,23 @@ efficient high-level implementation. Some examples:
   [[http://www.cplusplus.com/reference/map/multimap/][multimap]] is a
   [[http://en.wikipedia.org/wiki/Red%E2%80%93black_tree][red-black tree]] which I used in
   [[https://r-forge.r-project.org/scm/viewvc.php/pkg/clusterpath/src/?root=clusterpath][clusterpath]].
-  Another example is 
-  [[https://github.com/tdhock/DiffPeaks][DiffPeaks]]
-  which also uses the
-  [[http://www.cplusplus.com/reference/set/set/][set]],
-  [[http://www.cplusplus.com/reference/list/][list]], and
-  [[http://www.cplusplus.com/reference/map/map/][map]] containers.
+  Another example is [[https://github.com/aldro61/mmit/blob/master/Rpackage/R/compute_optimal_costs.R][mmit]]
+  which uses the
+  [[http://www.cplusplus.com/reference/map/map/][map]] container.
 - You need to perform scalar operations that can't be expressed
   without performing some redundant computations 
   using vector or matrix operations.
-  In that case you should use arrays in C.
+  Sometimes such operations can be coded efficiently in R using
+  [[https://github.com/Rdatatable/data.table/wiki][data.table]], but otherwise you should use arrays in C.
   For example I scan things along the genome in
-  [[https://github.com/tdhock/PeakError][PeakError]],
-  [[https://github.com/tdhock/SparseSignals][SparseSignals]], and
+  [[https://github.com/tdhock/PeakError][PeakError]] and 
   [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/?root=berr][breakpointError]].
 - There is some high quality library code in a low-level language that 
   is already written and you just want to use it in your high-level language.
-  For example regular expression support in R is lacking,
-  so I wrote
+  For example 
   [[https://github.com/tdhock/revector][the revector package]]
-  so I can parse a character vector using a matching vector of
-  [[http://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions][Perl-compatible regular expressions]].
+  uses the
+  [[http://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions][Perl-compatible regular expressions]] C library.
 
 ** When to NOT write low-level code?
 
@@ -68,7 +64,7 @@ efficient high-level implementation. Some examples:
   then you should start thinking about re-writing that one slow function in low-level code.
 - Your program uses all available memory and starts swapping.
   In that case maybe you can break your problem into separate tasks that can be computed independently?
-  It may be useful to know how much memory R is using, via
+  It may be useful to know how much memory R is using via something like
   =cat(’point 1 mem’, memory.size(), memory.size(max=TRUE), ’\n’)=
   (from Circle 2 Growing Objects of [[http://www.burns-stat.com/pages/Tutor/R_inferno.pdf][The R Inferno by Patrick Burns]]).
   If so, then just read the first data subset into memory,
@@ -79,4 +75,18 @@ efficient high-level implementation. Some examples:
   etc. This is also the basic idea behind
   [[http://cbio.ensmp.fr/~thocking/r-cbio-cluster.html][parallelization using qsub to launch jobs on a computer cluster]].
   
+** What is the best way to call C++ code from R?
 
+There are several different options. The pages linked above use either
+.C, .Call, or Rcpp. Which is best depends on what you want to do.
+- .C is my preferred method for most numerical algorithms, because it
+  is very simple, and the C++ code ends up being easily portable to
+  other languages (e.g. Python). However it is limited to input/output of
+  char/integer/double arrays.
+- Otherwise Rcpp should be preferred for algorithms that need to
+  input/output R internal data structures such as list and data.frame,
+  but the C++ code usually ends up being very specific to R (and not
+  easily portable to other languages).
+- In general I do not recommend .Call for casual useRs, because these
+  days Rcpp provides more user-friendly ways to do anything that .Call
+  can. (However Rcpp was written using .Call)
