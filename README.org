@@ -2,42 +2,7 @@ When and how to write low-level (C/C++) instead of high-level (R/Python) code?
 
 This is an introduction to interfacing low-level code with high-level
 languages. Below, I explain situations when you should and *should
-not* use low-level code. After reading that, if you decide to actually
-write the low-level code, you can read examples:
-- [[https://github.com/as4378/Test][Hello world example for .C by my student Anuraag Srivastava]]
-- [[file:binseg.org][Comparing .C and Rcpp implementations of binary segmentation]]
-- [[file:example-R-python.org][SegAnnot: a simple C library with bindings in both R and Python]]
-- [[file:example-C-Call.org][breakpointError: an R package that uses both .C and .Call]]
-- [[file:example-clusterpath-Rcpp-Call.org][clusterpath (standard Rinternals.h functions) vs clusterpathRcpp]]
-- [[file:example-penaltyLearning-C-Cpp.org][penaltyLearning: an R package with registered C and C++ functions]]
-
-** When to write low-level code?
-
-In general the answer is: use a low-level language when there is no
-efficient high-level implementation. Some examples:
-- You need complex data structures, for example that keep a bunch of stuff sorted in a certain way.
-  In that case you should definitely use C++ and the [[http://en.wikipedia.org/wiki/Standard_Template_Library][STL]].
-  For example the STL 
-  [[http://www.cplusplus.com/reference/map/multimap/][multimap]] is a
-  [[http://en.wikipedia.org/wiki/Red%E2%80%93black_tree][red-black tree]] which I used in
-  [[https://r-forge.r-project.org/scm/viewvc.php/pkg/clusterpath/src/?root=clusterpath][clusterpath]].
-  Another example is [[https://github.com/aldro61/mmit/blob/master/Rpackage/R/compute_optimal_costs.R][mmit]]
-  which uses the
-  [[http://www.cplusplus.com/reference/map/map/][map]] container.
-- You need to perform scalar operations that can't be expressed
-  without performing some redundant computations 
-  using vector or matrix operations.
-  Sometimes such operations can be coded efficiently in R using
-  [[https://github.com/Rdatatable/data.table/wiki][data.table]], but otherwise you should use arrays in C.
-  For example I scan things along the genome in
-  [[https://github.com/tdhock/PeakError][PeakError]] and 
-  [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/?root=berr][breakpointError]].
-- There is some high quality library code in a low-level language that 
-  is already written and you just want to use it in your high-level language.
-  For example 
-  [[https://github.com/tdhock/revector][the revector package]]
-  uses the
-  [[http://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions][Perl-compatible regular expressions]] C library.
+not* use low-level code. 
 
 ** When to NOT write low-level code?
 
@@ -77,18 +42,59 @@ efficient high-level implementation. Some examples:
   etc. This is also the basic idea behind
   [[http://cbio.ensmp.fr/~thocking/r-cbio-cluster.html][parallelization using qsub to launch jobs on a computer cluster]].
   
+
+** When to write low-level code?
+
+In general the answer is: use a low-level language when there is no
+efficient high-level implementation. Some examples:
+- You need complex data structures, for example that keep a bunch of stuff sorted in a certain way.
+  In that case you should definitely use C++ and the [[http://en.wikipedia.org/wiki/Standard_Template_Library][STL]].
+  For example the STL 
+  [[http://www.cplusplus.com/reference/map/multimap/][multimap]] is a
+  [[http://en.wikipedia.org/wiki/Red%E2%80%93black_tree][red-black tree]] which I used in
+  [[https://r-forge.r-project.org/scm/viewvc.php/pkg/clusterpath/src/?root=clusterpath][clusterpath]] and [[https://github.com/tdhock/binseg][binseg]].
+  Another example is [[https://github.com/aldro61/mmit/blob/master/mmit/core/piecewise_function.h][mmit]]
+  which uses the
+  [[http://www.cplusplus.com/reference/map/map/][map]] container.
+- You need to perform scalar operations that can't be expressed
+  without performing some redundant computations 
+  using vector or matrix operations.
+  Sometimes such operations can be coded efficiently in R using
+  [[https://github.com/Rdatatable/data.table/wiki][data.table]], but otherwise you should use arrays in C.
+  For example I scan things along the genome in
+  [[https://github.com/tdhock/PeakError][PeakError]] and 
+  [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/?root=berr][breakpointError]].
+- There is some high quality library code in a low-level language that 
+  is already written and you just want to use it in your high-level language.
+  For example 
+  [[https://github.com/tdhock/revector][the revector package]]
+  uses the
+  [[http://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions][Perl-compatible regular expressions]] C library; my student Qin
+  Wenfeng's [[https://cloud.r-project.org/web/packages/re2r/][re2r]] package uses Google's [[https://github.com/google/re2][RE2]] C++ library.
+
 ** What is the best way to call C++ code from R?
 
-There are several different options. The pages linked above use either
+There are several different options. The pages linked below use either
 .C, .Call, or Rcpp. Which is best depends on what you want to do.
 - .C is my preferred method for most numerical algorithms, because it
   is very simple, and the C++ code ends up being easily portable to
-  other languages (e.g. Python). However it is limited to input/output of
-  char/integer/double arrays.
+  other languages (e.g. Python). The .C interface is limited to
+  input/output of char/integer/double arrays, but that is not a big
+  drawback for numerical algorithms (which mainly use int/double).
 - Otherwise Rcpp should be preferred for algorithms that need to
   input/output R internal data structures such as list and data.frame,
   but the C++ code usually ends up being very specific to R (and not
   easily portable to other languages).
 - In general I do not recommend .Call for casual useRs, because these
   days Rcpp provides more user-friendly ways to do anything that .Call
-  can. (However Rcpp was written using .Call)
+  can. (However power users should note that Rcpp was written using
+  the .Call interface)
+
+More detailed examples / case studies:
+- [[https://github.com/as4378/Test][Hello world example for .C by my student Anuraag Srivastava]]
+- [[file:binseg.org][Comparing .C and Rcpp implementations of binary segmentation]]
+- [[file:example-R-python.org][SegAnnot: a simple C library with bindings in both R and Python]]
+- [[file:example-C-Call.org][breakpointError: an R package that uses both .C and .Call]]
+- [[file:example-clusterpath-Rcpp-Call.org][clusterpath (standard Rinternals.h functions) vs clusterpathRcpp]]
+- [[file:example-penaltyLearning-C-Cpp.org][penaltyLearning: an R package with registered C and C++ functions]]
+                                                                                        
