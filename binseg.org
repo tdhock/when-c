@@ -80,9 +80,12 @@ No advantage for either interface.
 Overall, I would suggest that the =Rcpp= interface should be preferred
 if you are willing to introduce a hard dependency on Rcpp and use
 roxygen2 for documentation. Using either interface I think it is
-important to separate the interface code from the main algorithm,
-which should be implemented as a function (1) which has input/output
-arguments and (2) which returns an integer error status code --- this
-is portable from R to other high-level languages (e.g. Python).
+important to separate the interface code (which depends on the
+high-level language/system) from the main algorithm (which should be
+portable to different high-level languages/systems such as R, Python,
+julia, etc). In particular the main algorithm should be
+implemented as a function (1) that uses standard int/double data types
+for input/output arguments and (2) that returns an integer error
+status code.
 
 
