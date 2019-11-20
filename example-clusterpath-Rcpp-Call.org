@@ -12,7 +12,6 @@ data types. So Rcpp should be good if you don't care exactly what the
 code is doing. But if you want more full control then you should learn
 Rinternals.h (after all, that is how they wrote Rcpp).
 
-
 For my [[https://r-forge.r-project.org/scm/viewvc.php/pkg/?root%3Dclusterpath][clusterpath]] project, I wrote the [[https://r-forge.r-project.org/scm/viewvc.php/pkg/clusterpath/?root%3Dclusterpath][clusterpath]] package that uses
 Rinternals.h, and the [[https://r-forge.r-project.org/scm/viewvc.php/pkg/clusterpathRcpp/?root%3Dclusterpath][clusterpathRcpp]] package that uses Rcpp.
 

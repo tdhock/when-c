@@ -4,6 +4,8 @@ This is an introduction to interfacing low-level code with high-level
 languages. Below, I explain situations when you should and *should
 not* use low-level code. After reading that, if you decide to actually
 write the low-level code, you can read examples:
+- [[https://github.com/as4378/Test][Hello world example for .C by my student Anuraag Srivastava]]
+- [[file:binseg.org][Comparing .C and Rcpp implementations of binary segmentation]]
 - [[file:example-R-python.org][SegAnnot: a simple C library with bindings in both R and Python]]
 - [[file:example-C-Call.org][breakpointError: an R package that uses both .C and .Call]]
 - [[file:example-clusterpath-Rcpp-Call.org][clusterpath (standard Rinternals.h functions) vs clusterpathRcpp]]
