@@ -31,17 +31,13 @@ not* use low-level code.
   then you should start thinking about re-writing that one slow function in low-level code.
 - Your program uses all available memory and starts swapping.
   In that case maybe you can break your problem into separate tasks that can be computed independently?
-  It may be useful to know how much memory R is using via something like
-  =cat(’point 1 mem’, memory.size(), memory.size(max=TRUE), ’\n’)=
-  (from Circle 2 Growing Objects of [[http://www.burns-stat.com/pages/Tutor/R_inferno.pdf][The R Inferno by Patrick Burns]]).
   If so, then just read the first data subset into memory,
   perform the first computation,
   write the first result to disk,
   erase the first data subset from memory,
   read the second data subset into memory,
-  etc. This is also the basic idea behind
-  [[http://cbio.ensmp.fr/~thocking/r-cbio-cluster.html][parallelization using qsub to launch jobs on a computer cluster]].
-  
+  etc.
+  It may be useful to know how much memory your R objects are using, try =object.size(your_object)= and reading Circle 2 Growing Objects of [[http://www.burns-stat.com/pages/Tutor/R_inferno.pdf][The R Inferno by Patrick Burns]].
 
 ** When to write low-level code?
 
@@ -57,13 +53,12 @@ efficient high-level implementation. Some examples:
   which uses the
   [[http://www.cplusplus.com/reference/map/map/][map]] container.
 - You need to perform scalar operations that can't be expressed
-  without performing some redundant computations 
+  without performing some redundant/inefficient computations 
   using vector or matrix operations.
   Sometimes such operations can be coded efficiently in R using
   [[https://github.com/Rdatatable/data.table/wiki][data.table]], but otherwise you should use arrays in C.
-  For example I scan things along the genome in
-  [[https://github.com/tdhock/PeakError][PeakError]] and 
-  [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/?root=berr][breakpointError]].
+  For example hclust() result (hierarchical clustering tree) is represented as a 2-column matrix, and then cutree() is implemented in C (converts tree into an integer vector of cluster labels). 
+  Another example is penaltyLearning::modelSelection() which uses [[https://github.com/tdhock/penaltyLearning/blob/master/src/modelSelectionFwd.cpp][C code]] to compute the [[https://arxiv.org/abs/2003.02808][exact model selection function]].
 - There is some high quality library code in a low-level language that 
   is already written and you just want to use it in your high-level language.
   For example 
