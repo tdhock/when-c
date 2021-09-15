@@ -71,14 +71,13 @@ efficient high-level implementation. Some examples:
 
 There are several different options. The pages linked below use either
 .C, .Call, or Rcpp. Which is best depends on what you want to do.
-- .C is my preferred method for most numerical algorithms, because it
-  is very simple, and the C++ code ends up being easily portable to
+- .C is the simplest method for most numerical algorithms, and the C++ code ends up being easily portable to
   other languages (e.g. Python). The .C interface is limited to
   input/output of char/integer/double arrays, but that is not a big
   drawback for numerical algorithms (which mainly use int/double).
-- Otherwise Rcpp should be preferred for algorithms that need to
+- I recommend using the Rcpp interface, which requires learning some additional C++ data types, but results in interfaces that are easy to modify/debug. It is useful for algorithms that need to
   input/output R internal data structures such as list and data.frame,
-  but a drawback is that the C++ code usually ends up being very specific to R (and not
+  but a drawback is that if you use the R data types then the C++ code ends up being very specific to R (and not
   easily portable to other languages). That drawback can be avoided by writing an interface function similar to the .C interface, see [[file:binseg.org][binseg example]] for discussion.
 - In general I do not recommend .Call for casual useRs, because these
   days Rcpp provides more user-friendly ways to do anything that .Call
