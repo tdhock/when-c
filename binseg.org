@@ -63,7 +63,7 @@ Advantage: =.C=.
 - Documentation/examples may be specified in //' roxygen comments in
   the binsegRcpp/src/rcpp_binseg_normal.cpp interface file (as
   explained in section 3.5 of the [[http://dirk.eddelbuettel.com/code/rcpp/Rcpp-attributes.pdf][Rcpp attributes vignette]]), which are
-  translated by Rcpp::compileAttributes to =#'= comments in the
+  translated by Rcpp::compileAttributes to #' comments in the
   binsegRcpp/src/RcppExports.cpp file. Docs/examples may be written
   directly in the binseg/R/binseg_normal.R file, which is a bit more
   flexible (e.g. other doc-generation systems like [[https://github.com/tdhock/inlinedocs][inlinedocs]] and [[http://www.aroma-project.org/developers/][Rdoc]]
