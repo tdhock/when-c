@@ -60,7 +60,7 @@ Advantage: =.C=.
   routines. Rcpp has functions ([[https://teuder.github.io/rcpp4everyone_en/240_na_nan_inf.html][is_na, is_nan, is_infinite]]) to
   check for these; in contrast .C stops with an error by
   default. 
-- Documentation/examples may be specified in =//'= roxygen comments in
+- Documentation/examples may be specified in //' roxygen comments in
   the binsegRcpp/src/rcpp_binseg_normal.cpp interface file (as
   explained in section 3.5 of the [[http://dirk.eddelbuettel.com/code/rcpp/Rcpp-attributes.pdf][Rcpp attributes vignette]]), which are
   translated by Rcpp::compileAttributes to =#'= comments in the
