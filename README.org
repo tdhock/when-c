@@ -78,8 +78,8 @@ There are several different options. The pages linked below use either
   drawback for numerical algorithms (which mainly use int/double).
 - Otherwise Rcpp should be preferred for algorithms that need to
   input/output R internal data structures such as list and data.frame,
-  but the C++ code usually ends up being very specific to R (and not
-  easily portable to other languages).
+  but a drawback is that the C++ code usually ends up being very specific to R (and not
+  easily portable to other languages). That drawback can be avoided by writing an interface function similar to the .C interface, see [[file:binseg.org][binseg example]] for discussion.
 - In general I do not recommend .Call for casual useRs, because these
   days Rcpp provides more user-friendly ways to do anything that .Call
   can. (However power users should note that Rcpp was written using
