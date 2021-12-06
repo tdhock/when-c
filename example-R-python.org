@@ -8,7 +8,7 @@ or no changes. However, one has to write some interface code in each
 case.
 
 First I discuss the possibility of writing a command line
-program. Then I discuss my SegAnnot project 
+program. Then I give details of my SegAnnot project 
 which has both R and Python bindings
 (if you want to interface even more languages you should use
 [[http://www.swig.org/][Simplified Wrapper and Interface Generator]]).
@@ -32,9 +32,9 @@ however CRAN will not distribute compiled command line programs).
 
 *** SegAnnot R package
 
-Full documentation is in the [[http://cran.r-project.org/doc/manuals/r-release/R-exts.html#Interface-functions-_002eC-and-_002eFortran][Foreign Function Interface part of the Writing R Extensions Manual]],
-but it may be easier to start with 
-[[http://adv-r.had.co.nz/Rcpp.html][Hadley Wickham's guide to Rcpp]].
+Full documentation for writing R interfaces is in the [[http://cran.r-project.org/doc/manuals/r-release/R-exts.html#Interface-functions-_002eC-and-_002eFortran][Foreign Function
+Interface part of the Writing R Extensions Manual]], but it may be
+easier to start with [[http://adv-r.had.co.nz/Rcpp.html][Hadley Wickham's guide to Rcpp]].
 
 - [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/FindOptimalSegmentations.c?view=markup&revision=15&root=segannot][SegAnnot/src/FindOptimalSegmentations.c]]
   contains the C code which defines the bases function.
@@ -43,7 +43,8 @@ but it may be easier to start with
   Make sure to #include "FindOptimalSegmentations.h" at the top,
   and define the error codes in that file.
 - [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/FindOptimalSegmentations.h?view=markup&revision=15&root=segannot][SegAnnot/src/FindOptimalSegmentations.h]]
-  is a C header file which defines the prototype (inputs and outputs) of the bases function which computes the optimal segmentation.
+  is a C header file which defines the prototype (inputs and outputs) 
+  of the bases function which computes the optimal segmentation.
 - In [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/bridge.c?view=markup&revision=15&root=segannot][SegAnnot/src/bridge.c]] we define the bridge_bases function which can be used in R.
   All .C bridge functions must take pointers as arguments, and return void.
   Make sure to put #include "FindOptimalSegmentations.h" at the top of this file.
@@ -68,18 +69,20 @@ and the [[http://docs.scipy.org/doc/numpy/user/c-info.how-to-extend.html#writing
   and it returns an integer error code.
   Again note that we #include "SegAnnot.h"
   which defines the error codes.
-  Note that this code is pretty much exactly the same as FindOptimalSegmentations.c in the R package.
+  Note that this code is pretty much exactly the same as 
+  FindOptimalSegmentations.c in the R package.
 - [[https://r-forge.r-project.org/scm/viewvc.php/python/SegAnnot.h?view=markup&revision=29&root=segannot][SegAnnot.h]]
   contains the prototype of the SegAnnotBases function.
 - [[https://r-forge.r-project.org/scm/viewvc.php/python/SegAnnot_interface.c?view=markup&revision=29&root=segannot][SegAnnot_interface.c]]
-  defines the bridge function SegAnnotBases2Py which converts the C data structures to Python data structures.
+  defines the bridge function SegAnnotBases2Py 
+  which converts the C data structures to Python data structures.
   Typically with numerical algorithms you will need to #include <numpy/arrayobject.h>
   and then start by converting Python data to C data,
   by calling PyArg_ParseTuple with a "O!" for each numpy vector you want to convert.
   You should read both the standard Python docs and the numpy docs about this function.
   Then we call SegAnnotBases, check for an error code, call PyErr_SetString if necessary,
   and then call Py_BuildValue with a bunch of "s:N" strings to make numpy vectors
-  (also rtfm about these functions).
+  (also read the manual for these functions).
   Finally look at the bottom of that file for Methods which defines the docstring,
   and initSegAnnot which must contain import_array() to prevent numpy from crashing python.
 - To get a working python module you need to make
@@ -88,4 +91,18 @@ and the [[http://docs.scipy.org/doc/numpy/user/c-info.how-to-extend.html#writing
   which will make a SegAnnot.so file.
   If it is on your PYTHONPATH then you can use it via =from SegAnnot import SegAnnotBases=
   as I do in [[https://gforge.inria.fr/scm/viewvc.php/webapp/pyramid/plotter/db.py?view=markup&revision=1435&root=breakpoints][the SegAnnDB source code]].
+
+*** Other examples 
+
+Here are a few simple examples of C/C++ libraries with both R and
+python interfaces.
+
+| library     | python | R   | notes                                                                 |
+|-------------+--------+-----+-----------------------------------------------------------------------|
+| SegAnnot    | [[https://r-forge.r-project.org/scm/viewvc.php/python/?root=segannot][svn]]    | [[https://r-forge.r-project.org/scm/viewvc.php/pkg/src/?root=segannot][svn]] |                                                                       |
+| mmit        | [[https://github.com/aldro61/mmit/tree/master/mmit][git]]    | [[https://github.com/aldro61/mmit/tree/master/Rpackage/src][git]] | cpp/h files in git repo R pkg are links which do not work on windows. |
+| PeakError   | [[https://github.com/deltarod/PeakError/][git]]    | [[https://github.com/tdhock/PeakError][git]] |                                                                       |
+| PeakSegDisk | [[https://github.com/deltarod/PeakSegDisk][git]]    | [[https://github.com/tdhock/PeakSegDisk][git]] | all arguments char** so easy to write command line interface.         |
+| FLOPART     | [[https://github.com/deltarod/FLOPART/][git]]    | [[https://github.com/tdhock/FLOPART/][git]] |                                                                       |
+| LOPART      | [[https://github.com/deltarod/LOPART/][git]]    | [[https://github.com/tdhock/LOPART/][git]] |                                                                       |
 
