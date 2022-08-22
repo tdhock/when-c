@@ -104,5 +104,6 @@ python interfaces.
 | PeakError   | [[https://github.com/deltarod/PeakError/][git]]    | [[https://github.com/tdhock/PeakError][git]] |                                                                       |
 | PeakSegDisk | [[https://github.com/deltarod/PeakSegDisk][git]]    | [[https://github.com/tdhock/PeakSegDisk][git]] | all arguments char** so easy to write command line interface.         |
 | FLOPART     | [[https://github.com/deltarod/FLOPART/][git]]    | [[https://github.com/tdhock/FLOPART/][git]] |                                                                       |
-| LOPART      | [[https://github.com/deltarod/LOPART/][git]]    | [[https://github.com/tdhock/LOPART/][git]] |                                                                       |
+| LOPART      | [[https://github.com/deltarod/LOPART/][git]]    | [[https://github.com/tdhock/LOPART/][git]] |    
+| penaltyLearning | [[https://github.com/tdhock/model_Selection_breakpoints][git]] | [[https://github.com/tdhock/penaltyLearning/][git]] |
 
