@@ -69,6 +69,8 @@ efficient high-level implementation. Some examples:
 
 ** What is the best way to call C++ code from R?
 
+See my video tutorials: [Make an R package with C++ code](https://www.youtube.com/playlist?list=PLwc48KSH3D1OkObQ22NHbFwEzof2CguJJ)
+
 There are several different options. The pages linked below use either
 .C, .Call, or Rcpp. Which is best depends on what you want to do.
 - .C is the simplest method for most numerical algorithms, and the C++ code ends up being easily portable to
